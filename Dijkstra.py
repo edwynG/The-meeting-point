@@ -8,35 +8,46 @@
 #un punto falso Z(o todas las posibles soluciones) tal que pedro se canse en el punto G.
 # De lo contrario el resultado sera "*".
 
+# Estructura de datos
 class Road:
     def __init__(self):
-        self.graph=dict()
-        self.min_road=dict()
-        self.point_P=0
-        self.point_G=0
-        self.len_vertice=0
-        self.len_road=0
-    
-    def insertVertice(self,vertice,dst,power):
-        if vertice in self.graph.keys():
-            self.graph[vertice][dst]=power
+        #in private: _atribute
+        self._graph=dict()
+        self._point_P=0
+        self._point_G=0
+        self._len_vertice=0
+        self._len_road=0
+
+    def getGraph(self): return self._graph
+    def getPoint_P(self): return self._point_P
+    def getPoint_G(self): return self._point_G
+
+    def _insertVertice(self,vertice,dst,power):
+        if vertice in self._graph.keys():
+            self._graph[vertice][dst]=power
             return
-        self.graph.update({vertice:{dst:power}})
+        self._graph.update({vertice:{dst:power}})
 
     def inputGraph(self):
         text = input().split(" ")
-        self.len_vertice=int(text[0])
-        self.len_road=int(text[1])
+        self._len_vertice=int(text[0])
+        self._len_road=int(text[1])
 
         text = input().split(" ")
-        self.point_P=int(text[0])
-        self.len_G=int(text[1])
+        self._point_P=int(text[0])
+        self._len_G=int(text[1])
 
-        for i in range(0,self.len_road):
+        for i in range(0,self._len_road):
             text = input().split(" ")
-            self.insertVertice(text[0],text[1],int(text[2]))
-            self.insertVertice(text[1],text[0],int(text[2]))
+            self._insertVertice(text[0],text[1],int(text[2]))
+            self._insertVertice(text[1],text[0],int(text[2]))
 
 
-new = Road()
-new.inputGraph()
+    def Dijstra(self):
+       return
+
+ 
+# Main:
+City = Road()
+City.inputGraph()
+print(City.getGraph())
