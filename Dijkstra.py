@@ -9,11 +9,13 @@
 # De lo contrario el resultado sera "*".
 
 # Estructura de datos
+import sys
 class Road:
     def __init__(self):
         #in private: _atribute
         self._graph=dict()
         self._point_P=0
+        self._power_min=0
         self._point_G=0
         self._len_vertice=0
         self._len_road=0
@@ -34,8 +36,8 @@ class Road:
         self._len_road=int(text[1])
 
         text = input().split(" ")
-        self._point_P=int(text[0])
-        self._len_G=int(text[1])
+        self._point_P=text[0]
+        self._point_G=text[1]
 
         for i in range(0,self._len_road):
             text = input().split(" ")
@@ -43,11 +45,45 @@ class Road:
             self._insertVertice(text[1],text[0],int(text[2]))
 
 
-    def Dijstra(self):
-       return
+    def Dijstra(self,grafo,inicio,comming):
+        items= list(grafo.keys())
+        min_road=list()
+        visited=list()
+    
+        for i in items:
+            if i == str(inicio):
+                min_road.append(0)
+                visited.append(True)
+            else:
+                min_road.append(sys.maxsize)
+                visited.append(False)
 
- 
+        here=str(inicio)
+        ultimate=items.index(str(comming))
+
+        while not visited[ultimate]:
+            for key,value in (grafo.get(here)).items():
+                if min_road[items.index(key)] > min_road[items.index(here)]+value:
+                    min_road[items.index(key)]=min_road[items.index(here)]+value
+            
+            minimal=self.minimales(min_road,visited)
+            here= items[min_road.index(minimal)]
+            visited[items.index(here)]=True
+
+        self._power_min=min_road[items.index(str(comming))]
+
+    def minimales(self,arr,visited):
+        minimal=sys.maxsize
+        for i in range(0,len(visited)):
+            if not visited[i]:
+                if minimal >= arr[i]:
+                    minimal=arr[i]
+
+        return minimal
 # Main:
 City = Road()
 City.inputGraph()
-print(City.getGraph())
+zone=City.getGraph()
+init = City.getPoint_P()
+comming= City.getPoint_G()
+City.Dijstra(zone,init,comming)
