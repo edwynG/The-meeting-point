@@ -1,0 +1,19 @@
+10 17
+a z
+a b 3
+a c 5
+c b 1
+e d 1
+c d 4
+b d 4
+c e 5
+d g 3
+g f 1
+e g 6
+d f 5
+f h 4
+g h 2
+g i 4
+h i 1
+h z 4
+i z 2
