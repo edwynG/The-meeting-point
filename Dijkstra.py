@@ -14,31 +14,35 @@ class Road:
     def __init__(self):
         #in private: _atribute
         self._graph=dict()
-        self.solution=list()
+        self._solution=list()
         self._point_P=0
-        self._power_min=0
         self._point_G=0
-
+        self._crosses=list()
+        self._len_vertice=0
     def getGraph(self): return self._graph
     def getPoint_P(self): return self._point_P
     def getPoint_G(self): return self._point_G
-    def getPowerMin(self): return self._power_min
+    def getSolution(self): return self._solution
 
     def printSolution(self): 
-        if len(self.solution): 
-            print(" ".join(self.solution))
+        if len(self._solution): 
+            print(" ".join(self._solution))
             return
         print("*")
 
     def _insertVertice(self,vertice,dst,power):
         if vertice in self._graph.keys():
-            self._graph[vertice][dst]=power
+            if power != 0:
+                self._graph[vertice][dst]=power
+                return
+            self._graph[vertice][dst]=sys.maxsize
+            
             return
         self._graph.update({vertice:{dst:power}})
 
     def inputGraph(self):
         text = input().split(" ")
-        len_vertice=int(text[0])
+        self.len_vertice=int(text[0])
         len_road=int(text[1])
 
         text = input().split(" ")
@@ -49,6 +53,8 @@ class Road:
             text = input().split(" ")
             self._insertVertice(text[0],text[1],int(text[2]))
             self._insertVertice(text[1],text[0],int(text[2]))
+
+        self._crosses=list(self._graph.keys())
 
     def Dijstra(self,grafo,init,comming):
         items= list(grafo.keys())
@@ -69,32 +75,49 @@ class Road:
                 if min_road[items.index(key)] > min_road[items.index(here)]+value:
                     min_road[items.index(key)]=min_road[items.index(here)]+value
             
+            
             minimal=self.minimales(min_road,visited)
-            here= items[min_road.index(minimal)]
+            here= items[minimal]
             visited[items.index(here)]=True
-        self._power_min=min_road[items.index(str(comming))]
+            
+        
+        return min_road[items.index(str(comming))]
 
     def minimales(self,arr,visited):
         minimal=sys.maxsize
+        indice=-1
         for i in range(0,len(visited)):
             if not visited[i]:
                 if minimal >= arr[i]:
                     minimal=arr[i]
-        return minimal
+                    indice=i
+        return indice
     
-    def falsePoint(self,source,valor,road=""):
-        if valor == self._power_min*2: 
-            self.solution.append(source)
+    def falsePoint(self,source,valor,dist,road=""):
+        if valor == dist*2: 
+            if source not in self._solution:
+                self._solution.append(source)
         for key,value in (self._graph.get(source)).items():
-            if road.find(key) == -1 and key != self._point_P and key != self._point_G: 
-                self.falsePoint(key,valor+value,road+key)
+            if road.find(key) == -1 and self._point_G != key and self._point_P != key : 
+                self.falsePoint(key,valor+value,dist,road+key)
+
+    def TheMeentingPoint(self,init):
+        road_min =self.Dijstra(self._graph,init,self._point_G)
+        self.falsePoint(self._point_G,road_min,road_min)
+        arr= list()
+        for key in self._solution:
+            arr.append(key)
+      
+        for key in arr:
+            minimo= self.Dijstra(self._graph,self._point_P,key)
+            if (minimo/2) != road_min:
+                self._solution.remove(key)
+            
+        self.printSolution()
+    
 
 City = Road()
 City.inputGraph()
-graph=City.getGraph()
-init = City.getPoint_P()
-comming= City.getPoint_G()
-City.Dijstra(graph,init,comming)
-road_min=City.getPowerMin()
-City.falsePoint(comming,road_min)
-City.printSolution()
+City.TheMeentingPoint(City.getPoint_P())
+
+
